@@ -1,6 +1,6 @@
-export type Watcher<T> = (newVal: T, oldVal: T) => void;
+type Watcher<T> = (newVal: T, oldVal: T) => void;
 
-export class JinjxSignal<T> {
+class JinjxSignal<T> {
 	private _value: T;
 	private watchers: Set<Watcher<T>>;
 
@@ -49,3 +49,5 @@ export class JinjxSignal<T> {
 		}
 	}
 }
+
+export default JinjxSignal;
