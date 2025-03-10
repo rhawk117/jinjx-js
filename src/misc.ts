@@ -46,7 +46,7 @@ function propState(propName: string, el: JinjxElement): ReactivePropHooks {
 		mutator.observe(el.native(), {
 			attributes: true,
 			attributeFilter: [propName],
-			attributeOldValue: true,
+			attributeOldValue: true
 		});
 	};
 

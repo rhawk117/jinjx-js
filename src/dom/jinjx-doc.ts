@@ -2,6 +2,10 @@ import { JinjxElementNotFound } from "./error";
 import JinjxElement from "./jinjx-element";
 
 class JinjxDOM {
+	/**
+	 * equivalent to document.addEventListener("DOMContentLoaded", callback)
+	 * @param callback 
+	 */
 	static ready(callback: (e: Event) => void) {
 		if (document.readyState === "loading") {
 			document.addEventListener("DOMContentLoaded", callback);
@@ -10,6 +14,11 @@ class JinjxDOM {
 		}
 	}
 
+	/**
+	 * equivalent to document.getElementById but returns a JinjxElement
+	 * @param id the id of the element
+	 * @returns {JinjxElement}
+	 */
 	static id(id: string): JinjxElement {
 		const element = document.getElementById(id);
 		if (!element) {
@@ -18,6 +27,11 @@ class JinjxDOM {
 		return new JinjxElement(element);
 	}
 
+	/**
+	 * equivalent to document.getElementsByClassName but returns JinjxElements
+	 * @param className the class name of the elements
+	 * @returns {JinjxElement[]}
+	 */
 	static classed(className: string): JinjxElement[] {
 		const elements = document.getElementsByClassName(className);
 		return Array.from(elements).map(
@@ -25,6 +39,11 @@ class JinjxDOM {
 		);
 	}
 
+	/**
+	 * equivalent to document.getElementsByTagName but returns JinjxElements
+	 * @param tagName 
+	 * @returns {JinjxElement[]}
+	 */
 	static tags(tagName: string): JinjxElement[] {
 		const elements = document.getElementsByTagName(tagName);
 		return Array.from(elements).map(
@@ -32,6 +51,10 @@ class JinjxDOM {
 		);
 	}
 
+	/**
+	 * returns all forms in the document as JinjxElements
+	 * @returns {JinjxElement[]}
+	 */
 	static forms(): JinjxElement[] {
 		const elements = document.forms;
 		return Array.from(elements).map((el) => new JinjxElement(el));
@@ -69,30 +92,25 @@ class JinjxDOM {
 	}
 
 	/**
-	 * creates a VexdElement from a template literal and returns the
-	 * "top-level" element or container, if there are multiple only the
-	 * first one is returned as to ensure your templates are short as this
-	 * shouldn't be used for massive templates
+	 * emits a custom event with the given name and options
+	 * @param eventName 
+	 * @param options 
 	 */
-	static template(
-		strings: TemplateStringsArray,
-		...values: any[]
-	): JinjxElement {
-		const rawHTML = strings.reduce((result, string, i) => {
-			const value = i < values.length ? String(values[i] ?? "") : "";
-			return result + string + value;
-		}, "");
-
-		const template = document.createElement("template");
-		template.innerHTML = rawHTML.trim();
-
-		const content = template.content;
-		return new JinjxElement(content.firstChild as HTMLElement);
-	}
-
 	static emit(eventName: string, options?: CustomEventInit): void {
 		const event = new CustomEvent(eventName, options);
 		document.dispatchEvent(event);
+	}
+
+	/**
+	 * adds an event listener to the document and returns a function
+	 * to remove the event listener
+	 * @param eventName 
+	 * @param eventHandler 
+	 * @returns 
+	 */
+	static on(eventName: string, eventHandler: (e: Event) => void): VoidFunction {
+		document.addEventListener(eventName, eventHandler);
+		return () => document.removeEventListener(eventName, eventHandler);
 	}
 }
 

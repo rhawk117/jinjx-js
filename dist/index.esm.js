@@ -721,9 +721,6 @@ class JinjxSignalList {
         }
         return removed;
     }
-    // ----------------
-    // Additional Utilities
-    // ----------------
     /**
      * Remove the item at a given index in the array.
      * Returns the removed item or undefined if index is out of range.
