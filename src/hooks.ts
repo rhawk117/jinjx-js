@@ -31,3 +31,14 @@ export function scope(el: JinjxElement): JinjxScope {
   return new JinjxScope(el);
 }
 
+type JinjxState<T> = readonly [() => T, (value: T) => void];
+
+
+export function state<T>(reaction: (oldVal: T, newVal: T) => void, initialValue: T): JinjxState<T> {
+  const signal = new JinjxSignal<T>(initialValue);  
+  signal.listens(reaction);
+  const set = (value: T) => signal.value = value;
+  const get = () => signal.value;
+  return [get, set] as JinjxState<T>;
+}
+

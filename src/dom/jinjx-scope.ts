@@ -43,7 +43,10 @@ class JinjxScope {
 		}
 		this._effectStore = [];
 	}
-
+	
+	public enter(callback: (scope: JinjxElement) => void): void {
+		callback(this.host);
+	}
 }
 
 export default JinjxScope;

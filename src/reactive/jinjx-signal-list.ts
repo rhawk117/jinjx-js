@@ -136,9 +136,6 @@ class JinjxSignalList<T> {
 		return removed;
 	}
 
-	// ----------------
-	// Additional Utilities
-	// ----------------
 
 	/**
 	 * Remove the item at a given index in the array.

@@ -1,50 +1,69 @@
-type Watcher<T> = (newVal: T, oldVal: T) => void;
-
+import { EffectFn, Watcher, Cleanup, ComputeFn } from "./jinx-reactive.type";
+/**
+ * a reactive signal that holds a value and notifies listeners when the value changes
+ */
 class JinjxSignal<T> {
-	private _value: T;
-	private watchers: Set<Watcher<T>>;
+	protected _value: T;
+	private listeners: Set<Watcher<T>>;
 
 	constructor(initialValue: T) {
 		this._value = initialValue;
-		this.watchers = new Set();
+		this.listeners = new Set();
 	}
 
 	/**
-	 * gets the current value of the signal
+	 * Gets the current value of the signal
 	 */
 	get value(): T {
 		return this._value;
 	}
 
 	/**
-	 * sets a new value for the signal and notifies all watchers
+	 * Sets a new value for the signal and notifies all listeners
 	 */
 	set value(newVal: T) {
-		if (newVal !== this._value) {
-			const oldVal = this._value;
-			this._value = newVal;
-			this.notify(newVal, oldVal);
+		if (!this.changed(newVal, this._value)) {
+			return;
 		}
+		const oldVal = this._value;
+		this._value = newVal;
+		this.notify(newVal, oldVal);
 	}
 
 	/**
-	 * adds a watcher to the signal that will be called when the value changes
-	 * @param watcher {Watcher<T>} a function that will be called when the value changes
+	 * Determines if the signal should update by comparing new and old values
+	 * Can be overridden in subclasses for custom equality checks
+	 * @param newVal The new value
+	 * @param oldVal The current value
 	 */
-	public listener(watcher: Watcher<T>): void {
-		this.watchers.add(watcher);
+	protected changed(newVal: T, oldVal: T): boolean {
+		return newVal !== oldVal;
 	}
 
 	/**
-	 * removes a watcher from the signal
-	 * @param watcher
+	 * Adds a listener to the value of the signal
+	 * @param watcher A function that will be called when the value changes
+	 * @returns A cleanup function that removes the watcher
 	 */
-	public stop(watcher: Watcher<T>): void {
-		this.watchers.delete(watcher);
+	public listens(watcher: Watcher<T>): void {
+		this.listeners.add(watcher);
 	}
 
-	private notify(newVal: T, oldVal: T) {
-		for (const watcher of this.watchers) {
+	/**
+	 * removes a listener from the signal
+	 * @param watcher The watcher to remove
+	 */
+	public off(watcher: Watcher<T>): void {
+		this.listeners.delete(watcher);
+	}
+
+	/**
+	 * notifies all listeners of a value change
+	 * @param newVal The new value
+	 * @param oldVal The previous value
+	 */
+	protected notify(newVal: T, oldVal: T): void {
+		for (const watcher of this.listeners) {
 			watcher(newVal, oldVal);
 		}
 	}
