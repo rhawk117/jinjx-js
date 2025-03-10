@@ -9,18 +9,15 @@ type ReactivePropHooks = readonly [
 
 /**
  * given an element and a property name, this function will return the following:
- * [onChange, off] 
+ * [onChange, off]
  * - onChange is a function that takes a callback that will be called when the property changes
- *   which is passed the old and new value 
+ *   which is passed the old and new value
  * - off is a function that will stop the mutation observer
  * @param propName - the name of the property the mutation observer will watch
  * @param el - the element to watch
- * @returns 
+ * @returns
  */
-function propState(
-	propName: string,
-	el: JinjxElement
-): ReactivePropHooks {
+function propState(propName: string, el: JinjxElement): ReactivePropHooks {
 	let mutator: MutationObserver | null = null;
 	let value: string = el.attr(propName) || "";
 
@@ -64,9 +61,9 @@ function propState(
 }
 
 /**
- * begins an interval and returns a function to stop it 
- * @param intervalCb 
- * @param ms 
+ * begins an interval and returns a function to stop it
+ * @param intervalCb
+ * @param ms
  * @returns {VoidFunction}
  */
 function interval(intervalCb: VoidFunction, ms: number): VoidFunction {
@@ -82,8 +79,8 @@ function interval(intervalCb: VoidFunction, ms: number): VoidFunction {
 
 /**
  * begins a timeout and returns a function to clear it
- * @param timeoutCb 
- * @param ms 
+ * @param timeoutCb
+ * @param ms
  * @returns {VoidFunction}
  */
 function countdown(timeoutCb: VoidFunction, ms: number): VoidFunction {
@@ -97,37 +94,35 @@ function countdown(timeoutCb: VoidFunction, ms: number): VoidFunction {
 	};
 }
 
-
 const resolveTemplateString = (
 	strings: TemplateStringsArray,
 	...values: any[]
 ): HTMLTemplateElement => {
-  const rawHTML = strings.reduce((result, string, i) => {
+	const rawHTML = strings.reduce((result, string, i) => {
 		const value = i < values.length ? String(values[i] ?? "") : "";
 		return result + string + value;
 	}, "");
 
 	const template = document.createElement("template");
 	template.innerHTML = rawHTML.trim();
-  return template;
-} 
+	return template;
+};
 
 /**
  * creates a JinjxElement from a template literal and returns the
  * "top-level" element or container, if there are multiple only the
  * first one is returned as to ensure your templates are short.
- * @param strings 
- * @param values 
- * @returns 
+ * @param strings
+ * @param values
+ * @returns
  */
 function snippet(
 	strings: TemplateStringsArray,
 	...values: any[]
 ): JinjxElement {
-  const template = resolveTemplateString(strings, ...values);
+	const template = resolveTemplateString(strings, ...values);
 	const content = template.content;
 	return new JinjxElement(content.firstChild as HTMLElement);
 }
-
 
 export { snippet, propState, interval, countdown };

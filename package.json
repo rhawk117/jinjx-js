@@ -17,8 +17,13 @@
 		"micro-framework",
 		"vanilla"
 	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/rhawk117/jinjx-js"
+	},
 	"scripts": {
 		"build": "rollup -c",
+		"prepublishOnly": "npm run build",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"devDependencies": {
