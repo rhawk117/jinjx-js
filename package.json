@@ -8,7 +8,15 @@
   "license": "ISC",
   "type": "module",
   "author": "rhawk117",
-  "keywords": [],
+  "keywords": [
+    "jinja",
+    "jinjx",
+    "dom",
+    "manipulation",
+    "framework",
+    "micro-framework",
+    "vanilla"
+  ],
   "scripts": {
     "build": "rollup -c",
     "test": "echo \"Error: no test specified\" && exit 1"
